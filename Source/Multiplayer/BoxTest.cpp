@@ -49,11 +49,11 @@ void ABoxTest::OnRep_RepNotifyVar()
 	{	
 		FVector NewLocation = GetActorLocation() + FVector(0.0f, 0.0f, 200.0f);
 		SetActorLocation(NewLocation);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Server: On_Rep_RepNotifyVar"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Server: On_Rep_RepNotifyVar"));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Client: On_Rep_RepNotifyVar"), GPlayInEditorID));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Client: On_Rep_RepNotifyVar"), GPlayInEditorID));
 
 	}
 }
