@@ -29,4 +29,13 @@ public:
 	float ReplicatedVar;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UPROPERTY(ReplicatedUsing = OnRep_RepNotifyVar, BlueprintReadWrite)
+	float RepNotifyVar;
+
+	UFUNCTION(BlueprintCallable)
+	void OnRep_RepNotifyVar();
+
+	void DecreaseRepNotifyVar();
+	FTimerHandle TestTimer;
 };
