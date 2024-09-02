@@ -131,11 +131,12 @@ void AMultiplayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AMultiplayerCharacter::ServerRPCFunction_Implementation()
+void AMultiplayerCharacter::ServerRPCFunction_Implementation(int MyArg)
 {
 	if (HasAuthority())
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Server: ServerRPCFunction_Implementation"));
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("MyArg: %d"), MyArg));
 
 		if (!SphereMesh)
 		{
@@ -171,4 +172,14 @@ void AMultiplayerCharacter::SpawnActor()
 			}
 		}
 	}
+}
+
+// validate function, if this return false, the server don't call the ServerRPCFunction_Implementation -> instantKick the Client
+bool AMultiplayerCharacter::ServerRPCFunction_Validate(int MyArg)
+{
+	if (MyArg >= 0 && MyArg <= 100)
+	{
+		return true;
+	}
+	return false;
 }
