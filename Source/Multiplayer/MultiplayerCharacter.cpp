@@ -142,27 +142,32 @@ void AMultiplayerCharacter::ServerRPCFunction_Implementation()
 			return;
 		}
 
-		AStaticMeshActor* StaticMeshActor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+		SpawnActor();
+	}
+}
 
-		if (StaticMeshActor)
+void AMultiplayerCharacter::SpawnActor()
+{
+	AStaticMeshActor* StaticMeshActor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+
+	if (StaticMeshActor)
+	{
+		StaticMeshActor->SetReplicates(true);
+		StaticMeshActor->SetReplicateMovement(true);
+		StaticMeshActor->SetMobility(EComponentMobility::Movable);
+
+		FVector SpawnLocation = GetActorLocation() + GetActorRotation().Vector() * 100.0f + GetActorUpVector() * 50.0f;
+		StaticMeshActor->SetActorLocation(SpawnLocation);
+
+		UStaticMeshComponent* StaticMeshComponent = StaticMeshActor->GetStaticMeshComponent();
+		if (StaticMeshComponent)
 		{
-			StaticMeshActor->SetReplicates(true);
-			StaticMeshActor->SetReplicateMovement(true);
-			StaticMeshActor->SetMobility(EComponentMobility::Movable);
+			StaticMeshComponent->SetIsReplicated(true);
+			StaticMeshComponent->SetSimulatePhysics(true);
 
-			FVector SpawnLocation = GetActorLocation() + GetActorRotation().Vector() * 100.0f + GetActorUpVector() * 50.0f;
-			StaticMeshActor->SetActorLocation(SpawnLocation);
-
-			UStaticMeshComponent* StaticMeshComponent = StaticMeshActor->GetStaticMeshComponent();
-			if (StaticMeshComponent)
+			if (SphereMesh)
 			{
-				StaticMeshComponent->SetIsReplicated(true);
-				StaticMeshComponent->SetSimulatePhysics(true);
-
-				if (SphereMesh)
-				{
-					StaticMeshComponent->SetStaticMesh(SphereMesh);
-				}
+				StaticMeshComponent->SetStaticMesh(SphereMesh);
 			}
 		}
 	}

@@ -74,5 +74,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* SphereMesh;
+
+	void SpawnActor();
 };
 
