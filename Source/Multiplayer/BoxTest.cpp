@@ -2,6 +2,7 @@
 
 
 #include "BoxTest.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"      // Da inserire per la macro DOREPLIFETIME
 
 // Sets default values
@@ -25,7 +26,8 @@ void ABoxTest::BeginPlay()
 	
 	if (HasAuthority())
 	{
-		GetWorld()->GetTimerManager().SetTimer(TestTimer, this, &ABoxTest::DecreaseRepNotifyVar, 2.0f, false);
+		//GetWorld()->GetTimerManager().SetTimer(TestTimer, this, &ABoxTest::DecreaseRepNotifyVar, 2.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(TestTimer, this, &ABoxTest::MulticastRPCExplode, 2.0f, false);
 	}
 }
 
@@ -69,5 +71,24 @@ void ABoxTest::DecreaseRepNotifyVar()
 		{
 			GetWorld()->GetTimerManager().SetTimer(TestTimer, this, &ABoxTest::DecreaseRepNotifyVar, 2.0f, false);
 		}
+	}
+}
+
+void ABoxTest::MulticastRPCExplode_Implementation()
+{
+	if (HasAuthority())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Server: MulticastRPC"));
+		GetWorld()->GetTimerManager().SetTimer(TestTimer, this, &ABoxTest::MulticastRPCExplode, 2.0f, false);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Client: MulticastRPC"), GPlayInEditorID));
+	}
+
+	if (!IsRunningDedicatedServer())
+	{
+		FVector SpawnLocation = GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, SpawnLocation, FRotator::ZeroRotator, true, EPSCPoolMethod::AutoRelease);
 	}
 }

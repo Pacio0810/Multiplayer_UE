@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Particles/ParticleSystem.h"
 #include "BoxTest.generated.h"
 
 UCLASS()
@@ -38,4 +39,10 @@ public:
 
 	void DecreaseRepNotifyVar();
 	FTimerHandle TestTimer;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRPCExplode();
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ExplosionEffect;
 };
