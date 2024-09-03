@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/StaticMeshActor.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -174,6 +175,14 @@ void AMultiplayerCharacter::SpawnActor()
 				StaticMeshComponent->SetStaticMesh(SphereMesh);
 			}
 		}
+	}
+}
+
+void AMultiplayerCharacter::ClientRPCFunction_Implementation()
+{
+	if (ParticleEffect)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleEffect, GetActorLocation(), FRotator::ZeroRotator,true, EPSCPoolMethod::AutoRelease);
 	}
 }
 
