@@ -149,7 +149,10 @@ void AMultiplayerCharacter::ServerRPCFunction_Implementation(int MyArg)
 
 void AMultiplayerCharacter::SpawnActor()
 {
-	AStaticMeshActor* StaticMeshActor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+
+	AStaticMeshActor* StaticMeshActor = GetWorld()->SpawnActor<AStaticMeshActor>(SpawnParameters);
 
 	if (StaticMeshActor)
 	{
