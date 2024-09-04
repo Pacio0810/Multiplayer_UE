@@ -3,6 +3,7 @@
 
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
 
 void PrintString(const FString& Message)
 {
@@ -30,7 +31,7 @@ void UMultiplayerSessionsSubsystem::Initialize(FSubsystemCollectionBase& Collect
 		SessionInterface = OnlineSubsytem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-			PrintString("Session Interface is valid");
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UMultiplayerSessionsSubsystem::OnCreateSessionComplete);
 		}
 	}
 }
@@ -42,7 +43,33 @@ void UMultiplayerSessionsSubsystem::Deinitialize()
 
 void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
 {
-	PrintString("Create Session");
+	if (ServerName.IsEmpty())
+	{
+		PrintString("Server name cannot be EMPTY!");
+		return;
+	}
+
+	FName SessionName = FName("Co-op Adventure Session Name");
+
+	FOnlineSessionSettings SessionSettings;
+	SessionSettings.bAllowJoinInProgress = true;
+	SessionSettings.bIsDedicated = false;
+	SessionSettings.bShouldAdvertise = true;
+	SessionSettings.NumPublicConnections = 2;
+	SessionSettings.bUseLobbiesIfAvailable = true;
+	SessionSettings.bUsesPresence = true;
+	SessionSettings.bAllowJoinViaPresence = true;
+
+	bool bIsLan = false;
+	if (IOnlineSubsystem::Get()->GetSubsystemName() == "NULL")
+	{
+		bIsLan = true;
+	}
+
+	SessionSettings.bIsLANMatch = bIsLan;
+
+	SessionInterface->CreateSession(0, SessionName, SessionSettings);
+
 }
 
 void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
@@ -50,3 +77,11 @@ void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
 	PrintString("Find Session");
 }
 
+void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	if (bWasSuccessful)
+	{
+		// after PATH -> ?Listen is for launch this map as a listen server
+		GetWorld()->ServerTravel("/Game/ThirdPerson/Maps/ThirdPersonMap?Listen");
+	}
+}
