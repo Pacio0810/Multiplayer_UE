@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
 
 /**
  * 
  */
+
 UCLASS()
 class MULTIPLAYER_API UMultiplayerSessionsSubsystem : public UGameInstanceSubsystem
 {
@@ -20,5 +22,7 @@ public:
 
 	void Initialize(FSubsystemCollectionBase& Collection) override;
 	void Deinitialize() override;
+
+	IOnlineSessionPtr SessionInterface;
 
 };
