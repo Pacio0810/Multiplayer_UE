@@ -25,4 +25,9 @@ public:
 
 	IOnlineSessionPtr SessionInterface;
 
+	UFUNCTION(BlueprintCallable)
+	void CreateServer(FString ServerName);
+
+	UFUNCTION(BlueprintCallable)
+	void FindServer(FString ServerName);
 };

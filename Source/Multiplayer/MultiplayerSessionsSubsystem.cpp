@@ -40,3 +40,13 @@ void UMultiplayerSessionsSubsystem::Deinitialize()
 	UE_LOG(LogTemp, Warning, TEXT("MSS Deinitialize"));
 }
 
+void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
+{
+	PrintString("Create Session");
+}
+
+void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
+{
+	PrintString("Find Session");
+}
+
