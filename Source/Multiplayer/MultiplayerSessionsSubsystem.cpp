@@ -4,6 +4,7 @@
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include <Online/OnlineSessionNames.h>
 
 void PrintString(const FString& Message)
 {
@@ -34,6 +35,7 @@ void UMultiplayerSessionsSubsystem::Initialize(FSubsystemCollectionBase& Collect
 		{
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UMultiplayerSessionsSubsystem::OnCreateSessionComplete);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UMultiplayerSessionsSubsystem::OnDestroySessionComplete);
+			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UMultiplayerSessionsSubsystem::OnFindSessionComplete);
 		}
 	}
 }
@@ -87,6 +89,26 @@ void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
 void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
 {
 	PrintString("Find Session");
+
+	if (ServerName.IsEmpty())
+	{
+		PrintString("Server name cannot be empty!!");
+		return;
+	}
+
+	OnlineSessionSearch = MakeShareable(new FOnlineSessionSearch());
+
+	bool bIsLan = false;
+	if (IOnlineSubsystem::Get()->GetSubsystemName() == "NULL")
+	{
+		bIsLan = true;
+	}
+
+	OnlineSessionSearch->bIsLanQuery = bIsLan;
+	OnlineSessionSearch->MaxSearchResults = 999;
+	OnlineSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+	SessionInterface->FindSessions(0, OnlineSessionSearch.ToSharedRef());
 }
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
@@ -104,5 +126,21 @@ void UMultiplayerSessionsSubsystem::OnDestroySessionComplete(FName SessionName, 
 	{
 		bCreateServerAfterDestroy = false;
 		CreateServer(DestroyServerName);
+	}
+}
+
+void UMultiplayerSessionsSubsystem::OnFindSessionComplete(bool bWasSuccessful)
+{
+	if (!bWasSuccessful)
+	{
+		return;
+	}
+	if (OnlineSessionSearch->SearchResults.Num() > 0)
+	{
+		PrintString(FString::Printf(TEXT("%d Session Found"), OnlineSessionSearch->SearchResults.Num()));
+	}
+	else
+	{
+		PrintString("Zero Session Found");
 	}
 }
