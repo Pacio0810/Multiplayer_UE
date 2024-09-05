@@ -90,8 +90,6 @@ void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
 
 void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
 {
-	PrintString("Find Session");
-
 	if (ServerName.IsEmpty())
 	{
 		PrintString("Server name cannot be empty!!");
@@ -159,12 +157,9 @@ void UMultiplayerSessionsSubsystem::OnFindSessionComplete(bool bWasSuccessful)
 				FString ServerName = "NO-Name";
 				result.Session.SessionSettings.Get(FName("SERVER_NAME"), ServerName);
 
-				PrintString(ServerName);
-
 				if (ServerName.Equals(ServerNameToFind))
 				{
 					CorrectResult = &result;
-					PrintString("Found Correct Server");
 					break;
 				}
 			}
@@ -190,15 +185,12 @@ void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOn
 {
 	if (Result == EOnJoinSessionCompleteResult::Success)
 	{
-		PrintString("Successfully joined Session");
-
 		FString SessionAddress = "";
 
 		bool bSuccess = SessionInterface->GetResolvedConnectString(SessionName, SessionAddress);
 
 		if (bSuccess)
 		{
-			PrintString(SessionAddress);
 			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
 			if (PlayerController)
 			{
