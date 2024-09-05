@@ -11,6 +11,9 @@
  * 
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FServerCreateDelegate, bool, bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FServerJoinDelegate, bool, bWasSuccessful);
+
 UCLASS()
 class MULTIPLAYER_API UMultiplayerSessionsSubsystem : public UGameInstanceSubsystem
 {
@@ -43,4 +46,10 @@ public:
 	FName MySessionName;
 
 	TSharedPtr<FOnlineSessionSearch> OnlineSessionSearch;
+
+	UPROPERTY(BlueprintAssignable)
+	FServerCreateDelegate ServerCreateDelegate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FServerJoinDelegate JoinDelegate;
 };

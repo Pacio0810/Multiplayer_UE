@@ -53,6 +53,7 @@ void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
 	if (ServerName.IsEmpty())
 	{
 		PrintString("Server name cannot be EMPTY!");
+		ServerCreateDelegate.Broadcast(false);
 		return;
 	}
 
@@ -93,6 +94,7 @@ void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
 	if (ServerName.IsEmpty())
 	{
 		PrintString("Server name cannot be empty!!");
+		JoinDelegate.Broadcast(false);
 		return;
 	}
 
@@ -115,6 +117,7 @@ void UMultiplayerSessionsSubsystem::FindServer(FString ServerName)
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
+	ServerCreateDelegate.Broadcast(bWasSuccessful);
 	if (bWasSuccessful)
 	{
 		// after PATH -> ?Listen is for launch this map as a listen server
@@ -133,8 +136,10 @@ void UMultiplayerSessionsSubsystem::OnDestroySessionComplete(FName SessionName, 
 
 void UMultiplayerSessionsSubsystem::OnFindSessionComplete(bool bWasSuccessful)
 {
+
 	if (!bWasSuccessful)
 	{
+		JoinDelegate.Broadcast(false);
 		return;
 	}
 
@@ -173,22 +178,28 @@ void UMultiplayerSessionsSubsystem::OnFindSessionComplete(bool bWasSuccessful)
 		{
 			PrintString("Couldn't find server");
 			ServerNameToFind = "";
+
+			JoinDelegate.Broadcast(false);
 		}
 	}
 	else
 	{
 		PrintString("Zero Session Found");
+		JoinDelegate.Broadcast(false);
+
 	}
 }
 
 void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
+	JoinDelegate.Broadcast(Result == EOnJoinSessionCompleteResult::Success);
 	if (Result == EOnJoinSessionCompleteResult::Success)
 	{
 		FString SessionAddress = "";
 
 		bool bSuccess = SessionInterface->GetResolvedConnectString(SessionName, SessionAddress);
 
+		
 		if (bSuccess)
 		{
 			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
