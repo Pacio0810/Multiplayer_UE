@@ -120,8 +120,12 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 	ServerCreateDelegate.Broadcast(bWasSuccessful);
 	if (bWasSuccessful)
 	{
+		if (GameMapPath.IsEmpty())
+		{
+			GetWorld()->ServerTravel("/Game/ThirdPerson/Maps/ThirdPersonMap?Listen");
+		}
 		// after PATH -> ?Listen is for launch this map as a listen server
-		GetWorld()->ServerTravel("/Game/ThirdPerson/Maps/ThirdPersonMap?Listen");
+		GetWorld()->ServerTravel(GameMapPath.Append("?Listen"));
 	}
 }
 
