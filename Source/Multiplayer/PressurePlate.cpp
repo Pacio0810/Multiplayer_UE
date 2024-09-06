@@ -26,7 +26,7 @@ APressurePlate::APressurePlate()
 	{
 		TriggerMesh->SetStaticMesh(TriggerMeshAssets.Object);
 		TriggerMesh->SetRelativeScale3D(FVector(3.8f, 3.8f, 1.5f));
-		TriggerMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 10.0f));
+		TriggerMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f));
 	}
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -57,5 +57,42 @@ void APressurePlate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// si fa il check sull'authority per farlo controllare solo al server
+
+	if (HasAuthority())
+	{
+		TArray<AActor*> OverlappingActors;
+		AActor* TriggerActor = nullptr;
+		TriggerMesh->GetOverlappingActors(OverlappingActors);
+
+		for (int32 ActorId = 0; ActorId < OverlappingActors.Num(); ActorId++)
+		{
+			AActor* Actor = OverlappingActors[ActorId];
+			if (Actor->ActorHasTag("TriggerActor"))
+			{
+				TriggerActor = Actor;
+				break;
+			}
+		}
+
+		if (TriggerActor)
+		{
+			if (!bActivated)
+			{
+				bActivated = true;
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("Activated"));
+				OnActivated.Broadcast();
+			}
+		}
+		else
+		{
+			if (bActivated)
+			{
+				bActivated = false;
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("Deactivated"));
+				OnDeactivated.Broadcast();
+			}
+		}
+	}
 }
 
