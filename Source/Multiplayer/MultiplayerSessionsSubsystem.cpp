@@ -25,7 +25,6 @@ UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem()
 
 void UMultiplayerSessionsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	//PrintString("MSS Initialize");
 	IOnlineSubsystem* OnlineSubsytem = IOnlineSubsystem::Get();
 	if (OnlineSubsytem)
 	{
@@ -45,7 +44,7 @@ void UMultiplayerSessionsSubsystem::Initialize(FSubsystemCollectionBase& Collect
 
 void UMultiplayerSessionsSubsystem::Deinitialize()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MSS Deinitialize"));
+
 }
 
 void UMultiplayerSessionsSubsystem::CreateServer(FString ServerName)
