@@ -1,5 +1,6 @@
 #include "CollectableKey.h"
 #include "Net/UnrealNetwork.h"
+#include "MultiplayerCharacter.h"
 
 ACollectableKey::ACollectableKey()
 {
@@ -28,23 +29,37 @@ ACollectableKey::ACollectableKey()
 void ACollectableKey::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void ACollectableKey::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (HasAuthority())
+	{
+		TArray<AActor*> OverlappingActors;
+		CapsuleComponent->GetOverlappingActors(OverlappingActors, AMultiplayerCharacter::StaticClass());
+
+		if (OverlappingActors.Num() > 0)
+		{
+			if (!IsCollected)
+			{
+				IsCollected = true;
+				OnRep_IsCollected();
+			}
+		}
+	}
 }
 
 void ACollectableKey::OnRep_IsCollected()
 {
-
+	Mesh->SetVisibility(!IsCollected);
 }
 
-void ACollectableKey::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeTimeProps) const
+void ACollectableKey::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifeTimeProps);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACollectableKey, IsCollected);
 }

@@ -9,16 +9,16 @@ UCLASS()
 class MULTIPLAYER_API ACollectableKey : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ACollectableKey();
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeTimeProps) const override;
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
