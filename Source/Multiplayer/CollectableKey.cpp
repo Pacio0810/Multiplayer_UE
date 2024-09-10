@@ -54,7 +54,16 @@ void ACollectableKey::Tick(float DeltaTime)
 
 void ACollectableKey::OnRep_IsCollected()
 {
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Display, TEXT("Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Client"));
+	}
 	Mesh->SetVisibility(!IsCollected);
+	
 }
 
 void ACollectableKey::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
