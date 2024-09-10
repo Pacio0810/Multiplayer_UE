@@ -74,6 +74,14 @@ void ACollectableKey::OnRep_IsCollected()
 	Mesh->SetVisibility(!IsCollected);
 
 	CollectAudio->Play();
+
+	if (IsCollected)
+	{
+		if (KeyHolderRef)
+		{
+			KeyHolderRef->ActivateKeyMesh();
+		}
+	}
 }
 
 void ACollectableKey::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

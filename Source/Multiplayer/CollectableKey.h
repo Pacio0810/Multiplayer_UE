@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/AudioComponent.h"
+#include "CollectableKeyHolder.h"
 #include "CollectableKey.generated.h"
 
 UCLASS()
@@ -33,6 +34,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float RotationSpeed;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ACollectableKeyHolder* KeyHolderRef;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	UAudioComponent* CollectAudio;
