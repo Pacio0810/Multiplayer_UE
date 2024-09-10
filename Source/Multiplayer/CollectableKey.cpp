@@ -66,6 +66,10 @@ void ACollectableKey::OnRep_IsCollected()
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Display, TEXT("Server"));
+		if (IsCollected)
+		{
+			OnCollected.Broadcast();
+		}
 	}
 	else
 	{
