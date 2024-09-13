@@ -1,12 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PressurePlate.h"
 
-// Sets default values
 APressurePlate::APressurePlate()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	SetReplicateMovement(true);
@@ -43,7 +38,6 @@ APressurePlate::APressurePlate()
 	}
 }
 
-// Called when the game starts or when spawned
 void APressurePlate::BeginPlay()
 {
 	Super::BeginPlay();
@@ -80,7 +74,6 @@ void APressurePlate::Tick(float DeltaTime)
 			if (!bActivated)
 			{
 				bActivated = true;
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("Activated"));
 				OnActivated.Broadcast();
 			}
 		}
@@ -89,7 +82,6 @@ void APressurePlate::Tick(float DeltaTime)
 			if (bActivated)
 			{
 				bActivated = false;
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, TEXT("Deactivated"));
 				OnDeactivated.Broadcast();
 			}
 		}
